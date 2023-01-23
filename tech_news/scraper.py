@@ -2,6 +2,7 @@ import requests
 import re
 import time
 from parsel import Selector
+
 # from bs4 import BeautifulSoup
 
 
@@ -37,53 +38,35 @@ def scrape_next_page_link(html_content):
 def remover_html_tags(text):
     clean = re.compile("<.*?>")
     return re.sub(clean, "", text)
+# https://medium.com/@jorlugaqui/how-to-strip-html-tags-from-a-string-in-python-7cb81a2bbf44
 
 
 # Requisito 4
 def scrape_news(html_content):
     selector = Selector(html_content)
 
+    url = selector.css("link[rel='canonical']::attr(href)").get()
+    title = selector.css("h1.entry-title::text").get().strip()
+    timestamp = selector.css(".meta-date::text").get()
+    writer = selector.css(".author a::text").get()
+    comments_count = len(selector.css("comment-list li").getall()) or 0
+    summary = remover_html_tags(selector.css(".entry-content p").get()).strip()
+    tags = selector.css(".post-tags li a::text").getall()
+    category = selector.css(".meta-category .label::text").get()
+
     return {
-        "url": selector.css("link[rel='canonical']::attr(href)").get(),
-        "title": selector.css("h1.entry-title::text").get().strip(),
-        "timestamp": selector.css(".meta-date::text").get(),
-        "writer": selector.css(".author a::text").get(),
-        "comments_count": len(selector.css("comment-list li").getall()) or 0,
-        "summary":  remover_html_tags(
-            selector.css(".entry-content p").get()
-            ).strip(),
-        "tags": selector.css(".post-tags li a::text").getall(),
-        "category": selector.css(".meta-category .label::text").get(),
-    }
-    # """Seu código deve vir aqui"""
-
-    # response = Selector(html_content)
-
-    # url = response.css("link[rel='canonical']::attr(href)").get() ##
-    # title = response.css("h1.entry-title::text").get().strip() ##
-    # timestamp = response.css(".meta-date::text").get() ##
-    # writer = response.css(".author a::text").get() ##
-
-    # comments_count = len(response.css("comment-list li").getall()) or 0 ##
-
-    # summary = response.css(".entry-content > p:first-of-type *::text").get()
-
-    # tags = response.css(".post-tags a *::text").getall()
-
-    # category = response.css(".label::text").get()
-
-    # return {
-    #     "url": url,
-    #     "title": title,
-    #     "timestamp": timestamp,
-    #     "writer": writer,
-    #     "comments_count": comments_count,
-    #     "summary": summary,
-    #     "tags": tags,
-    #     "category": category,
-    # }
-
+            "url": url,
+            "title": title,
+            "timestamp": timestamp,
+            "writer": writer,
+            "comments_count": comments_count,
+            "summary": summary,
+            "tags": tags,
+            "category": category
+     }
 
 # Requisito 5
+
+
 def get_tech_news(amount):
     """Seu código deve vir aqui"""
