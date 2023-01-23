@@ -17,8 +17,8 @@ def search_by_date(date):
         date = datetime.fromisocalendar(date).strftime("%d/%m/%Y")
         date_list = search_news({"timestamp": {"$eq": date}})
         return [
-            (new["title"], new["url"])
-            for new in date_list
+            (date_list["title"], date_list["url"])
+            for date_list in date_list
         ]
     except ValueError:
         raise ValueError("Data inválida")
