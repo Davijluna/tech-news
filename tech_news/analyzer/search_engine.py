@@ -38,7 +38,7 @@ def search_by_tag(tag):
 def search_by_category(category):
 
     new = []
-    response = search_news({"category": {"regex": category, "$options": "i"}})
+    response = search_news({"category": {"$regex": category, "$options": "i"}})
     for index in response:
         new.append((index["title"], index["url"]))
     return new
