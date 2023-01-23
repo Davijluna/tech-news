@@ -14,7 +14,7 @@ def search_by_title(title):
 def search_by_date(date):
     """Seu código deve vir aqui"""
     try:
-        date = datetime.fromisocalendar(date).strftime("%d/%m/%Y")
+        date = datetime.fromisoformat(date).strftime("%d/%m/%Y")
         date_list = search_news({"timestamp": {"$eq": date}})
         return [
             (date_list["title"], date_list["url"])
